@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DripLab — Streetwear Digital</title>
+  <meta name="description" content="DripLab: drops limitados de streetwear, comunidade, votações e recompensas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="noise"></div>
+
+  <header class="header">
+    <a class="logo" href="#home">
+      <img src="img/driplablogo.png" alt="DripLab"></a>
+    <nav class="nav" id="mainNav">
+      <a href="#drops">Drops</a>
+      <a href="#shop">Shop</a>
+      <a href="#community">Community</a>
+      <a href="#rewards">Rewards</a>
+    </nav>
+    <div class="header-actions">
+      <button class="icon-btn" aria-label="Pesquisar" id="searchBtn">⌕</button>
+      <button class="icon-btn cart-btn" aria-label="Carrinho" id="cartBtn">🛒<b id="cartCount">0</b></button>
+      <button class="account-btn" id="accountBtn" type="button">ENTRAR</button>
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <form class="search-bar" id="searchBar" hidden>
+    <input type="search" id="searchInput" placeholder="Buscar peças do drop…" maxlength="60" aria-label="Buscar peças">
+    <button type="submit" class="btn btn-primary">BUSCAR</button>
+    <button type="button" class="btn btn-outline" id="searchClear">LIMPAR</button>
+  </form>
+
+  <main id="home">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow" id="heroEyebrow">DROP 004 / LIMITED EDITION</p>
+        <h1>WEAR<br><span>THE</span> <em>DRIP</em>.</h1>
+        <p class="hero-text">Streetwear para quem transforma a internet em cultura. Drops limitados, comunidade e recompensas em um só lugar.</p>
+        <div class="hero-buttons">
+          <a href="#drops" class="btn btn-primary">VER O DROP <span>↗</span></a>
+          <a href="#community" class="btn btn-outline">ENTRAR NA COMUNIDADE</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <img src="img/driplabestilo.png" alt="DripLab Banner">
+        <div class="vertical-text">STREETWEAR / CULTURE / GAMES</div>
+      </div>
+    </section>
+
+    <section class="ticker">
+      <div>LIMITED DROPS ✦ EXCLUSIVE PIECES ✦ COMMUNITY ✦ DIGITAL CULTURE ✦ LIMITED DROPS ✦ EXCLUSIVE PIECES ✦</div>
+    </section>
+
+    <section class="section" id="drops">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">01 / THE DROP</p>
+          <h2>DROP <span id="dropNumberTitle">004</span></h2>
+        </div>
+        <div class="countdown-wrap">
+          <small id="countdownLabel">DROP ENCERRA EM</small>
+          <div class="countdown" id="countdown">--:--:--</div>
+        </div>
+      </div>
+
+      <div class="drop-banner">
+        <div>
+          <span class="drop-number" id="dropNumber">004</span>
+          <h3 id="dropName">URBAN<br>GLITCH</h3>
+          <p id="dropTagline">Peças limitadas. Identidade ilimitada.</p>
+        </div>
+        <div class="drop-info">
+          <p>RESTAM</p>
+          <strong id="stock">--</strong>
+          <span>UNIDADES</span>
+        </div>
+      </div>
+      <p class="access-note" id="dropAccess" role="status"></p>
+    </section>
+
+    <section class="section" id="shop">
+      <div class="section-heading simple">
+        <div>
+          <p class="eyebrow">02 / SHOP</p>
+          <h2>PEÇAS DO <span>DROP</span></h2>
+        </div>
+        <button class="filter-btn" id="filterBtn">FILTRAR +</button>
+      </div>
+
+      <div class="filters" id="filters">
+        <button class="active" data-filter="all">Todos</button>
+        <button data-filter="hoodie">Hoodies</button>
+        <button data-filter="tee">T-Shirts</button>
+        <button data-filter="accessory">Acessórios</button>
+      </div>
+
+      <div class="products" id="products" aria-live="polite">
+        <p class="empty-note">Carregando peças…</p>
+      </div>
+    </section>
+
+    <section class="community section" id="community">
+      <div class="community-copy">
+        <p class="eyebrow">03 / COMMUNITY</p>
+        <h2>VOCÊ FAZ<br>PARTE DO <span>LAB</span>.</h2>
+        <p>Vote nos próximos designs, desbloqueie experiências e acumule XP participando da comunidade.</p>
+        <div class="level-card" id="levelCard">
+          <div class="level-top"><span id="levelName">ENTRE PARA VER SEU NÍVEL</span><b id="levelXp"></b></div>
+          <div class="progress"><i id="levelBar"></i></div>
+        </div>
+        <div class="badges" id="badges"></div>
+      </div>
+
+      <div class="vote-card" id="voteCard">
+        <div class="vote-head"><span>COMMUNITY VOTE</span><b id="voteTimer">—</b></div>
+        <h3 id="voteTitle">QUAL ESTAMPA<br>DEVE VIR NO DROP 005?</h3>
+        <div class="vote-options" id="voteOptions"></div>
+        <p id="voteMessage">Seu voto ajuda a construir o próximo drop.</p>
+      </div>
+
+      <div class="wall">
+        <div class="wall-head">
+          <h3>MURAL DA COMUNIDADE</h3>
+          <small id="wallCount"></small>
+        </div>
+        <form class="comment-form" id="commentForm">
+          <textarea id="commentBody" maxlength="500" rows="2" placeholder="Deixe seu comentário sobre o drop…" aria-label="Comentário"></textarea>
+          <button class="btn btn-primary" type="submit">COMENTAR</button>
+        </form>
+        <ul class="comments" id="comments"></ul>
+      </div>
+    </section>
+
+    <section class="rewards section" id="rewards">
+      <div class="section-heading simple">
+        <div>
+          <p class="eyebrow">04 / REWARDS</p>
+          <h2>DESBLOQUEIE <span>MAIS</span>.</h2>
+        </div>
+      </div>
+      <ul class="xp-rules" id="xpRules"></ul>
+      <div class="reward-grid" id="rewardGrid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-logo">DRIP<span>LAB</span></div>
+    <p>STREETWEAR / GAMES / COMMUNITY</p>
+    <div class="socials"><a href="#">IG</a><a href="#">TK</a><a href="#">DS</a></div>
+  </footer>
+
+  <!-- Login / cadastro -->
+  <div class="modal" id="authModal" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button class="modal-close" data-close aria-label="Fechar">✕</button>
+      <p class="eyebrow">DRIPLAB ID</p>
+      <h3 id="authTitle">ENTRAR NO LAB</h3>
+      <div class="tabs">
+        <button type="button" class="active" data-auth-tab="login">Entrar</button>
+        <button type="button" data-auth-tab="register">Criar conta</button>
+      </div>
+      <form id="authForm" novalidate>
+        <label data-only="register">Nome<input name="name" autocomplete="name" maxlength="100"></label>
+        <label>E-mail<input name="email" type="email" autocomplete="email" maxlength="160" required></label>
+        <label>Senha<input name="password" type="password" autocomplete="current-password" maxlength="72" required></label>
+        <label data-only="register">Código de indicação (opcional)<input name="referral_code" maxlength="12" autocomplete="off"></label>
+        <p class="form-error" id="authError" role="alert"></p>
+        <button class="btn btn-primary full" type="submit" id="authSubmit">ENTRAR</button>
+        <p class="hint" data-only="register">Mínimo de 8 caracteres, com letras e números. Cadastro rende +50 XP.</p>
+        <p class="hint" data-only="login">Conta de teste: demo@driplab.com / Demo@123</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Detalhe do produto -->
+  <div class="modal" id="productModal" hidden>
+    <div class="modal-box product-modal" role="dialog" aria-modal="true" aria-labelledby="pmName">
+      <button class="modal-close" data-close aria-label="Fechar">✕</button>
+      <div class="product-image" id="pmImage"><span id="pmBadge"></span></div>
+      <div class="pm-info">
+        <p class="eyebrow" id="pmMeta"></p>
+        <h3 id="pmName"></h3>
+        <p class="pm-desc" id="pmDesc"></p>
+        <div class="pm-row"><strong id="pmPrice"></strong><span id="pmStock"></span></div>
+        <button class="btn btn-primary full" id="pmAdd" type="button">ADICIONAR AO CARRINHO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Conta -->
+  <div class="modal" id="accountModal" hidden>
+    <div class="modal-box account-modal" role="dialog" aria-modal="true" aria-labelledby="acName">
+      <button class="modal-close" data-close aria-label="Fechar">✕</button>
+      <p class="eyebrow" id="acEmail"></p>
+      <h3 id="acName"></h3>
+      <div class="level-card">
+        <div class="level-top"><span id="acLevel"></span><b id="acXp"></b></div>
+        <div class="progress"><i id="acBar"></i></div>
+      </div>
+      <p class="hint">Seu código de indicação: <b id="acRef"></b> (+200 XP por amigo que se cadastrar)</p>
+      <h4>BADGES</h4>
+      <div class="badges" id="acBadges"></div>
+      <h4>MEUS PEDIDOS</h4>
+      <ul class="orders" id="acOrders"></ul>
+      <h4>RECOMPENSAS RESGATADAS</h4>
+      <ul class="orders" id="acRewards"></ul>
+      <button class="btn btn-outline full" id="logoutBtn" type="button">SAIR</button>
+    </div>
+  </div>
+
+  <!-- Carrinho -->
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <aside class="drawer" id="cartDrawer" aria-label="Carrinho" aria-hidden="true">
+    <div class="drawer-head"><h3>CARRINHO</h3><button class="modal-close" data-close-drawer aria-label="Fechar">✕</button></div>
+    <ul class="cart-list" id="cartList"></ul>
+    <div class="drawer-foot">
+      <div class="cart-total"><span>TOTAL</span><strong id="cartTotal">R$ 0,00</strong></div>
+      <p class="form-error" id="cartError" role="alert"></p>
+      <button class="btn btn-primary full" id="checkoutBtn" type="button">FINALIZAR COMPRA</button>
+      <p class="hint">Pagamento simulado neste projeto acadêmico.</p>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
