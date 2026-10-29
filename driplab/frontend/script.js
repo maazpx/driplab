@@ -12,6 +12,10 @@ const store = {
   del(k) { try { localStorage.removeItem(k); } catch { /* ignora */ } },
 };
 
+/* ===== CONFIGURAÇÃO DO JOGO =====
+   Cole aqui o link do jogo do DripLab (começando com https://). Deixe '' enquanto não tiver. */
+const GAME_URL = '';
+
 /* ---------- estado ---------- */
 const state = {
   token: store.get('dl_token'),
@@ -126,6 +130,24 @@ document.addEventListener('keydown', e => {
 /* ---------- navegação (menu mobile, filtros, busca) ---------- */
 $('menuBtn').addEventListener('click', () => $('mainNav').classList.toggle('mobile-open'));
 document.querySelectorAll('.nav a').forEach(a => a.addEventListener('click', () => $('mainNav').classList.remove('mobile-open')));
+
+/* ---------- abas (uma "página" por vez; o endereço #shop, #community… continua funcionando) ---------- */
+// Drops e Rewards ficam dentro da aba Início: o endereço #drops / #rewards abre o Início e rola até a seção.
+const TAB_OF = { home: 'home', drops: 'home', rewards: 'home', shop: 'shop', community: 'community', game: 'game' };
+function showTab(hash) {
+  const name = TAB_OF[hash] || 'home';
+  document.querySelectorAll('[data-tab]').forEach(sec => { sec.hidden = sec.dataset.tab !== name; });
+  document.querySelectorAll('[data-tab-link]').forEach(a => {
+    const on = a.dataset.tabLink === name;
+    a.classList.toggle('active', on);
+    if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+  });
+  const target = (hash === 'drops' || hash === 'rewards') ? $(hash) : null;
+  if (target) target.scrollIntoView(); else window.scrollTo({ top: 0 });
+}
+const tabFromHash = () => showTab(location.hash.replace('#', ''));
+window.addEventListener('hashchange', tabFromHash);
+tabFromHash();
 $('filterBtn').addEventListener('click', () => $('filters').classList.toggle('open'));
 document.querySelectorAll('.filters button').forEach(btn => btn.addEventListener('click', () => {
   document.querySelector('.filters button.active').classList.remove('active');
@@ -140,7 +162,7 @@ $('searchBtn').addEventListener('click', () => {
 $('searchBar').addEventListener('submit', e => {
   e.preventDefault();
   state.q = $('searchInput').value.trim();
-  loadProducts().then(() => $('shop').scrollIntoView({ behavior: 'smooth' }));
+  loadProducts().then(() => { if (location.hash !== '#shop') location.hash = '#shop'; });
 });
 $('searchClear').addEventListener('click', () => { $('searchInput').value = ''; state.q = ''; loadProducts(); });
 
@@ -544,9 +566,24 @@ async function loadRules() {
   } catch { /* ignora */ }
 }
 
+/* ---------- aba do jogo ---------- */
+function setupGame() {
+  const link = $('gameLink'); const status = $('gameStatus');
+  let url = null;
+  try { const u = new URL(GAME_URL); if (u.protocol === 'https:' || u.protocol === 'http:') url = u.href; } catch { /* sem link válido */ }
+  if (url) {
+    link.href = url; status.textContent = 'ABRE EM UMA NOVA ABA';
+  } else {
+    link.removeAttribute('href'); link.removeAttribute('target');
+    link.classList.add('disabled'); link.setAttribute('aria-disabled', 'true'); link.firstChild.textContent = 'EM BREVE ';
+    status.textContent = 'O LINK DO JOGO SERÁ LIBERADO EM BREVE';
+    $('gameTag').textContent = 'COMING SOON';
+  }
+}
+
 /* ---------- inicialização ---------- */
 async function init() {
-  updateCartBadge(); renderAccountButton(); setAuthMode('login');
+  setupGame(); updateCartBadge(); renderAccountButton(); setAuthMode('login');
   if (location.protocol === 'file:') {
     $('products').replaceChildren(h('p', { class: 'empty-note', text: 'Abra o site pelo servidor: http://localhost:3000 (veja o README). Abrir o arquivo direto não conecta à API.' }));
     return;
@@ -558,5 +595,6 @@ async function init() {
     $('products').replaceChildren(h('p', { class: 'empty-note', text: e.status === 404 ? 'Nenhum drop cadastrado ainda.' : `Não foi possível carregar o drop: ${e.message}` }));
   }
   await Promise.all([loadPoll(), loadRewards(), loadRules(), loadComments()]);
+  if (/^#(drops|rewards)$/.test(location.hash)) tabFromHash(); // o conteúdo mudou de altura: acerta a rolagem
 }
 init();

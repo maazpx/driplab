@@ -17,10 +17,10 @@
     <a class="logo" href="#home">
       <img src="img/driplablogo.png" alt="DripLab"></a>
     <nav class="nav" id="mainNav">
-      <a href="#drops">Drops</a>
-      <a href="#shop">Shop</a>
-      <a href="#community">Community</a>
-      <a href="#rewards">Rewards</a>
+      <a href="#home" data-tab-link="home">Início</a>
+      <a href="#shop" data-tab-link="shop">Shop</a>
+      <a href="#community" data-tab-link="community">Community</a>
+      <a href="#game" data-tab-link="game">Game</a>
     </nav>
     <div class="header-actions">
       <button class="icon-btn" aria-label="Pesquisar" id="searchBtn">⌕</button>
@@ -37,7 +37,7 @@
   </form>
 
   <main id="home">
-    <section class="hero">
+    <section class="hero" data-tab="home">
       <div class="hero-copy">
         <p class="eyebrow" id="heroEyebrow">DROP 004 / LIMITED EDITION</p>
         <h1>WEAR<br><span>THE</span> <em>DRIP</em>.</h1>
@@ -53,11 +53,11 @@
       </div>
     </section>
 
-    <section class="ticker">
+    <section class="ticker" data-tab="home">
       <div>LIMITED DROPS ✦ EXCLUSIVE PIECES ✦ COMMUNITY ✦ DIGITAL CULTURE ✦ LIMITED DROPS ✦ EXCLUSIVE PIECES ✦</div>
     </section>
 
-    <section class="section" id="drops">
+    <section class="section" id="drops" data-tab="home">
       <div class="section-heading">
         <div>
           <p class="eyebrow">01 / THE DROP</p>
@@ -82,12 +82,23 @@
         </div>
       </div>
       <p class="access-note" id="dropAccess" role="status"></p>
+      <a href="#shop" class="btn btn-primary tab-cta">VER AS PEÇAS DO DROP <span>↗</span></a>
     </section>
-
-    <section class="section" id="shop">
+    <section class="rewards section" id="rewards" data-tab="home">
       <div class="section-heading simple">
         <div>
-          <p class="eyebrow">02 / SHOP</p>
+          <p class="eyebrow">02 / REWARDS</p>
+          <h2>DESBLOQUEIE <span>MAIS</span>.</h2>
+        </div>
+      </div>
+      <ul class="xp-rules" id="xpRules"></ul>
+      <div class="reward-grid" id="rewardGrid"></div>
+    </section>
+
+    <section class="section" id="shop" data-tab="shop" hidden>
+      <div class="section-heading simple">
+        <div>
+          <p class="eyebrow">03 / SHOP</p>
           <h2>PEÇAS DO <span>DROP</span></h2>
         </div>
         <button class="filter-btn" id="filterBtn">FILTRAR +</button>
@@ -105,9 +116,9 @@
       </div>
     </section>
 
-    <section class="community section" id="community">
+    <section class="community section" id="community" data-tab="community" hidden>
       <div class="community-copy">
-        <p class="eyebrow">03 / COMMUNITY</p>
+        <p class="eyebrow">04 / COMMUNITY</p>
         <h2>VOCÊ FAZ<br>PARTE DO <span>LAB</span>.</h2>
         <p>Vote nos próximos designs, desbloqueie experiências e acumule XP participando da comunidade.</p>
         <div class="level-card" id="levelCard">
@@ -137,15 +148,21 @@
       </div>
     </section>
 
-    <section class="rewards section" id="rewards">
-      <div class="section-heading simple">
-        <div>
-          <p class="eyebrow">04 / REWARDS</p>
-          <h2>DESBLOQUEIE <span>MAIS</span>.</h2>
+
+    <section class="game section" id="game" data-tab="game" hidden>
+      <div class="game-copy">
+        <p class="eyebrow">05 / GAME</p>
+        <h2>JOGUE O <span>LAB</span>.</h2>
+        <p>O universo DripLab também é jogável. Entre no jogo e viva a cultura digital da marca além da loja.</p>
+        <div class="game-actions">
+          <a class="btn btn-primary" id="gameLink" href="#game" target="_blank" rel="noopener noreferrer">JOGAR AGORA <span>↗</span></a>
+          <span class="game-status" id="gameStatus"></span>
         </div>
       </div>
-      <ul class="xp-rules" id="xpRules"></ul>
-      <div class="reward-grid" id="rewardGrid"></div>
+      <div class="game-art">
+        <img src="img/driplabestilo.png" alt="Arte do jogo DripLab">
+        <span class="game-tag" id="gameTag">DRIPLAB GAME</span>
+      </div>
     </section>
   </main>
 

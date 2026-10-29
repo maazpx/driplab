@@ -362,3 +362,33 @@ button:disabled{opacity:.5;cursor:not-allowed}
   .reward strong{font-size:22px}
   .toast{left:20px;right:20px;bottom:15px}
 }
+
+
+/* ===== Abas de navegação ===== */
+main{min-height:calc(100vh - 76px - 140px)}
+[data-tab]:not([hidden]){animation:tabIn .35s ease}
+@keyframes tabIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.nav a{position:relative;padding:6px 0}
+.nav a.active{color:var(--orange)}
+.nav a.active::after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:2px;background:var(--orange)}
+.tab-cta{margin-top:28px}
+@media(max-width:900px){.nav a.active::after{bottom:-2px;right:auto;width:28px}}
+@media(prefers-reduced-motion:reduce){[data-tab]:not([hidden]){animation:none}}
+
+
+/* ===== Aba Game ===== */
+.game{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center;min-height:calc(100vh - 76px - 140px)}
+.game-copy h2{font-size:clamp(55px,7vw,100px);line-height:.85;margin-bottom:25px}
+.game-copy h2 span{color:var(--orange)}
+.game-copy>p:not(.eyebrow){color:#999;line-height:1.7;max-width:520px}
+.game-actions{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin-top:34px}
+.game-status{font-size:9px;font-weight:900;letter-spacing:2px;color:#777}
+.btn.disabled{background:#222;color:#777;border:1px solid #333;cursor:not-allowed;pointer-events:none}
+.game-art{position:relative;overflow:hidden;border:1px solid #333;aspect-ratio:4/3;background:#111}
+.game-art img{width:100%;height:100%;object-fit:cover;display:block}
+.game-tag{position:absolute;left:18px;top:18px;background:var(--orange);color:#000;padding:8px 12px;font-size:10px;font-weight:900;letter-spacing:2px}
+@media(max-width:900px){.game{grid-template-columns:1fr;gap:40px}}
+@media(max-width:600px){.game-copy h2{font-size:60px}.game-actions .btn{width:100%}}
+
+/* seções internas da aba Início: não ficam escondidas atrás do menu fixo ao rolar até elas */
+#drops,#rewards{scroll-margin-top:76px}
