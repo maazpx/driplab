@@ -14,7 +14,7 @@ const MIME = {
   '.webp': 'image/webp', '.json': 'application/json; charset=utf-8', '.woff2': 'font/woff2',
 };
 const CSP = "default-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; " +
-  "img-src 'self' data:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'";
+  "img-src 'self' data: https:; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'";
 
 function sendJson(res, status, body) {
   const data = body === null || body === undefined ? '' : JSON.stringify(body);

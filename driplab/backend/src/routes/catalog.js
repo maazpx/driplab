@@ -21,6 +21,7 @@ const PRODUCT = {
   theme: { type: 'enum', values: THEMES, default: 'black' },
   badge_text: { type: 'string', max: 10, default: 'DL' },
   image_url: { type: 'string', max: 255, nullable: true },
+  image_back_url: { type: 'string', max: 255, nullable: true },
   active: { type: 'bool', default: true },
 };
 
@@ -85,9 +86,9 @@ module.exports = router => {
     const d = validate(body, PRODUCT);
     await checkRefs(db, d);
     const { insertId } = await db.run(
-      `INSERT INTO products (drop_id, category_id, name, subtitle, description, price, stock_initial, stock, theme, badge_text, image_url, active, created_at)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-      [d.drop_id, d.category_id, d.name, d.subtitle ?? null, d.description ?? null, d.price, d.stock, d.stock, d.theme, d.badge_text, d.image_url ?? null, d.active ? 1 : 0, toDb(new Date())]);
+            `INSERT INTO products (drop_id, category_id, name, subtitle, description, price, stock_initial, stock, theme, badge_text, image_url, image_back_url, active, created_at)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      [d.drop_id, d.category_id, d.name, d.subtitle ?? null, d.description ?? null, d.price, d.stock, d.stock, d.theme, d.badge_text, d.image_url ?? null, d.image_back_url ?? null, d.active ? 1 : 0, toDb(new Date())]);
     return created(productView(await db.get(`${PRODUCT_SELECT} WHERE p.id = ?`, [insertId])));
   });
 
@@ -98,7 +99,7 @@ module.exports = router => {
     if (!cur) throw E.notFound('Produto');
     await checkRefs(db, d);
     const sets = []; const vals = [];
-    for (const k of ['drop_id', 'category_id', 'name', 'subtitle', 'description', 'price', 'theme', 'badge_text', 'image_url']) {
+    for (const k of ['drop_id', 'category_id', 'name', 'subtitle', 'description', 'price', 'theme', 'badge_text', 'image_url', 'image_back_url']) {
       if (d[k] !== undefined) { sets.push(`${k} = ?`); vals.push(d[k]); }
     }
     if (d.active !== undefined) { sets.push('active = ?'); vals.push(d.active ? 1 : 0); }

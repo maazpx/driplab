@@ -16,7 +16,7 @@ const productView = r => ({
   category: r.category_slug, category_name: r.category_name,
   name: r.name, subtitle: r.subtitle, description: r.description, price: Number(r.price),
   stock_initial: r.stock_initial, stock: r.stock, sold_out: r.stock <= 0,
-  theme: r.theme, badge_text: r.badge_text, image_url: r.image_url, active: !!r.active,
+  theme: r.theme, badge_text: r.badge_text, image_url: r.image_url, image_back_url: r.image_back_url, active: !!r.active,
 });
 
 const PRODUCT_SELECT = `SELECT p.*, c.slug AS category_slug, c.name AS category_name, d.number AS drop_number

@@ -22,7 +22,8 @@ function createMysql(cfg) {
     host: cfg.host, port: cfg.port, user: cfg.user, password: cfg.password, database: cfg.database,
     waitForConnections: true, connectionLimit: 10,
     dateStrings: true,      
-    decimalNumbers: true,   
+    decimalNumbers: true,  
+    charset: 'utf8mb4', 
   });
   pool.pool.on('connection', c => c.query("SET time_zone = '+00:00'"));
   const base = wrap(pool);
@@ -41,6 +42,7 @@ function createMysql(cfg) {
       } catch (e) {
         try { await conn.rollback(); } catch {  }
         if (e && e.errno === 1213 && attempt < 3) continue; 
+        throw normalize(e);
       } finally { conn.release(); }
     }
   }

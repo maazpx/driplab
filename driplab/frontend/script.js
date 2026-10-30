@@ -122,6 +122,11 @@ function closeDrawer() { $('cartDrawer').classList.remove('open'); $('cartDrawer
 $('drawerBackdrop').addEventListener('click', closeDrawer);
 document.querySelector('[data-close-drawer]').addEventListener('click', closeDrawer);
 document.addEventListener('keydown', e => {
+  if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && !$('productModal').hidden) {
+    const b = document.querySelector(e.key === 'ArrowLeft' ? '#pmImage .g-prev' : '#pmImage .g-next');
+    if (b && !b.hidden) b.click();
+    return;
+  }
   if (e.key !== 'Escape') return;
   document.querySelectorAll('.modal:not([hidden])').forEach(closeModal);
   closeDrawer();
@@ -204,6 +209,58 @@ function renderDrop() {
   tick();
 }
 
+/* ---------- fotos dos produtos (frente e verso) ----------
+   image_url = frente, image_back_url = verso (ex.: "img/produtos/glitch-hoodie-frente.png").
+   Com 2 fotos aparecem setas, indicador FRENTE/VERSO, teclado (← →) e arrastar com o dedo.
+   Sem foto (ou se o arquivo não carregar), continua o cartão colorido do tema. */
+const validSrc = u => (typeof u === 'string' && /^(https?:\/\/|\/?img\/)/.test(u.trim())) ? u.trim() : null;
+let swipedAt = 0; // evita abrir o produto quando o gesto foi um arrastar
+
+function applyPhoto(box, p, { nav = false } = {}) {
+  box.querySelectorAll('.photo,.g-btn,.g-label').forEach(n => n.remove());
+  box.classList.remove('has-photo', 'has-gallery');
+  const pics = [['FRENTE', validSrc(p.image_url)], ['VERSO', validSrc(p.image_back_url)]]
+    .filter(([, src]) => src).map(([label, src]) => ({ label, src, ok: true, el: null }));
+  if (!pics.length) return;
+  let cur = 0;
+  const alive = () => pics.filter(x => x.ok);
+  const prevBtn = h('button', { class: 'g-btn g-prev', type: 'button', 'aria-label': 'Foto anterior', onclick: e => { e.stopPropagation(); go(-1); } }, '‹');
+  const nextBtn = h('button', { class: 'g-btn g-next', type: 'button', 'aria-label': 'Próxima foto', onclick: e => { e.stopPropagation(); go(1); } }, '›');
+  const label = h('span', { class: 'g-label', 'aria-live': 'polite' });
+
+  function render() {
+    const list = alive();
+    if (!list.length) { box.querySelectorAll('.photo,.g-btn,.g-label').forEach(n => n.remove()); box.classList.remove('has-photo', 'has-gallery'); return; }
+    cur = (cur + list.length) % list.length;
+    pics.forEach(x => x.el.classList.toggle('active', x === list[cur]));
+    const multi = nav && list.length > 1;
+    box.classList.toggle('has-gallery', multi);
+    prevBtn.hidden = nextBtn.hidden = label.hidden = !multi;
+    label.textContent = `${list[cur].label} · ${cur + 1}/${list.length}`;
+  }
+  function go(d) { cur += d; render(); }
+
+  pics.forEach(x => {
+    x.el = h('img', { class: 'photo', src: x.src, alt: `${p.name} — ${x.label.toLowerCase()}`, loading: 'lazy', decoding: 'async' });
+    x.el.addEventListener('error', () => { x.ok = false; x.el.remove(); render(); });
+    box.prepend(x.el);
+  });
+  box.classList.add('has-photo');
+  if (nav) {
+    box.append(label, prevBtn, nextBtn);
+    let x0 = null;
+    box.style.touchAction = 'pan-y';
+    box.addEventListener('pointerdown', e => { x0 = e.clientX; });
+    box.addEventListener('pointerup', e => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40 && alive().length > 1) { swipedAt = Date.now(); go(dx < 0 ? 1 : -1); }
+    });
+    box.addEventListener('pointercancel', () => { x0 = null; });
+  }
+  render();
+}
+
 async function loadProducts() {
   const box = $('products');
   if (!state.drop) return;
@@ -221,10 +278,12 @@ function renderProducts() {
   if (!state.products.length) { box.append(h('p', { class: 'empty-note', text: state.q ? `Nenhuma peça encontrada para "${state.q}".` : 'Nenhuma peça nesta categoria.' })); return; }
   state.products.forEach((p, i) => {
     const soldOut = p.sold_out;
+    const pic = h('div', { class: `product-image product-${p.theme}`, onclick: () => { if (Date.now() - swipedAt > 400) openProduct(p.id); } },
+      h('span', { text: p.badge_text }), h('b', { text: pad2(i + 1) }),
+      soldOut ? h('em', { class: 'sold-tag', text: 'ESGOTADO' }) : null);
+    applyPhoto(pic, p, { nav: true });
     box.append(h('article', { class: 'product' + (soldOut ? ' sold-out' : ''), dataset: { category: p.category } },
-      h('div', { class: `product-image product-${p.theme}`, onclick: () => openProduct(p.id) },
-        h('span', { text: p.badge_text }), h('b', { text: pad2(i + 1) }),
-        soldOut ? h('em', { class: 'sold-tag', text: 'ESGOTADO' }) : null),
+      pic,
       h('div', { class: 'product-info' },
         h('div', {}, h('button', { class: 'name-btn', type: 'button', onclick: () => openProduct(p.id) }, h('h3', { text: p.name })), h('p', { text: p.subtitle || '' })),
         h('strong', { text: money(p.price) })),
@@ -236,6 +295,7 @@ function openProduct(id) {
   const p = state.products.find(x => x.id === id); if (!p) return;
   $('pmImage').className = `product-image product-${p.theme}`;
   $('pmBadge').textContent = p.badge_text;
+  applyPhoto($('pmImage'), p, { nav: true });
   $('pmMeta').textContent = `${p.category_name.toUpperCase()} / DROP ${pad2(p.drop_number).padStart(3, '0')}`;
   $('pmName').textContent = p.name;
   $('pmDesc').textContent = p.description || p.subtitle || '';
@@ -293,6 +353,12 @@ function addToCart(p) {
   showToast(`${p.name} adicionado ao carrinho.`);
 }
 
+function cartThumb(p) {
+  const box = h('div', { class: `cart-thumb product-${p.theme}` });
+  applyPhoto(box, p);
+  return box;
+}
+
 function renderCart() {
   const list = $('cartList'); clear(list);
   $('cartError').textContent = '';
@@ -309,7 +375,7 @@ function renderCart() {
       saveCart(); updateCartBadge(); renderCart();
     };
     list.append(h('li', { class: 'cart-line' },
-      h('div', { class: `cart-thumb product-${p.theme}` }),
+      cartThumb(p),
       h('div', { class: 'cart-meta' }, h('strong', { text: p.name }), h('span', { text: money(p.price) })),
       h('div', { class: 'qty' },
         h('button', { type: 'button', 'aria-label': 'Diminuir', onclick: () => change(-1) }, '−'),
@@ -580,6 +646,17 @@ function setupGame() {
     $('gameTag').textContent = 'COMING SOON';
   }
 }
+
+
+const scrollObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) entry.target.classList.add('visible');
+  });
+}, { threshold: 0.15 });
+
+if ($('drops')) scrollObserver.observe($('drops'));
+if ($('rewards')) scrollObserver.observe($('rewards'));
+
 
 /* ---------- inicialização ---------- */
 async function init() {

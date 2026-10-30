@@ -322,6 +322,21 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .orders small{display:block;color:#777;margin-top:4px;line-height:1.4}
 .orders .code{color:var(--orange);letter-spacing:2px;font-size:11px}
 .account-modal .btn{margin-top:26px}
+/* Efeitos de Scroll */
+#drops, #rewards {
+  opacity: 0; transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+#drops.visible, #rewards.visible {
+  opacity: 1; transform: translateY(0);
+}
+
+/* Ícone Streetwear da Faixa */
+.street-icon {
+  margin: 0 20px; vertical-align: middle; display: inline-block;
+  color: #000; animation: spinGlobe 8s linear infinite;
+}
+@keyframes spinGlobe { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 /* carrinho (gaveta) */
 .drawer-backdrop{position:fixed;inset:0;background:#000a;z-index:70}
@@ -341,6 +356,37 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .drawer-foot{padding:20px 24px;border-top:1px solid #292929;display:grid;gap:12px}
 .cart-total{display:flex;justify-content:space-between;align-items:baseline;font-size:11px;font-weight:900;letter-spacing:2px;color:#999}
 .cart-total strong{font:32px Anton;color:var(--text)}
+
+.street-icon {
+  margin: 0 20px;
+  vertical-align: middle;
+  display: inline-block;
+  color: #000; /* Define a cor das linhas do globo (pode mudar para #FFF se o fundo for escuro) */
+}
+
+/* ===== Animações de Scroll ===== */
+#drops, #rewards {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  will-change: opacity, transform;
+}
+
+/* Esta classe será adicionada pelo JavaScript quando a seção aparecer na tela */
+#drops.visible, #rewards.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Opcional: Se quiser que o título de dentro anime com um pequeno atraso */
+#drops.visible h2, #rewards.visible h2 {
+  animation: slideUp 0.6s ease-out 0.2s backwards;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 
 /* menu mobile e filtros (no original o menu mobile não abria) */
 @media(max-width:900px){
@@ -392,3 +438,35 @@ main{min-height:calc(100vh - 76px - 140px)}
 
 /* seções internas da aba Início: não ficam escondidas atrás do menu fixo ao rolar até elas */
 #drops,#rewards{scroll-margin-top:76px}
+
+
+/* ===== Faixa (ticker): ícones no lugar das estrelas ===== */
+.ticker .ticker-track{display:inline-flex;align-items:center;white-space:nowrap}
+.ticker-track .tk{display:inline-block}
+.sep{display:inline-block;flex:none;width:26px;height:26px;margin:0 28px;background:currentColor;
+  -webkit-mask:var(--ico) center/contain no-repeat;mask:var(--ico) center/contain no-repeat}
+.sep-globe{--ico:url("img/ticker-globe.png")}
+.sep-x-solid{--ico:url("img/ticker-x-solid.png")}
+.sep-chevron{--ico:url("img/ticker-chevron.png")}
+.sep-x-outline{--ico:url("img/ticker-x-outline.png")}
+@media(max-width:600px){.sep{width:20px;height:20px;margin:0 18px}}
+@media(prefers-reduced-motion:reduce){.ticker .ticker-track{animation:none}}
+
+
+/* ===== Fotos dos produtos (quando o produto tem image_url) ===== */
+.product-image img.photo,.cart-thumb img.photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:0;opacity:0;transition:opacity .25s;user-select:none;-webkit-user-drag:none}
+.product-image img.photo.active,.cart-thumb img.photo.active{opacity:1}
+.product-image.has-photo:before{display:none}
+.product-image.has-photo>span:not(.g-label){display:none}
+.product-image.has-photo>b{color:#fff;text-shadow:0 1px 3px #000}
+.product-image.has-photo{background:#151515}
+.cart-thumb{position:relative;overflow:hidden}
+
+/* ===== Galeria frente/verso ===== */
+.g-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:3;width:38px;height:38px;border-radius:50%;border:1px solid #fff5;background:#000a;color:#fff;font-size:26px;line-height:1;display:grid;place-items:center;padding:0 0 3px;opacity:.9}
+.g-btn:hover,.g-btn:focus-visible{background:var(--orange);border-color:var(--orange);color:#000;opacity:1}
+.g-prev{left:10px}
+.g-next{right:10px}
+.product-image .g-label{position:absolute;left:12px;top:12px;z-index:3;background:#000b;color:#fff;font:900 9px/1 Inter,Arial,sans-serif;letter-spacing:1.5px;padding:6px 9px;transform:none}
+.product-image.has-gallery{cursor:pointer}
+@media(max-width:600px){.g-btn{width:32px;height:32px;font-size:22px}.g-prev{left:6px}.g-next{right:6px}.product-image .g-label{left:8px;top:8px;font-size:8px}}
