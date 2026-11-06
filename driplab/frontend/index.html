@@ -7,7 +7,7 @@
   <meta name="description" content="DripLab: drops limitados de streetwear, comunidade, votações e recompensas.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800;900&family=Permanent+Marker&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -42,13 +42,25 @@
         <p class="eyebrow" id="heroEyebrow">DROP 004 / LIMITED EDITION</p>
         <h1>WEAR<br><span>THE</span> <em>DRIP</em>.</h1>
         <p class="hero-text">Streetwear para quem transforma a internet em cultura. Drops limitados, comunidade e recompensas em um só lugar.</p>
+         <div class="hero-clock" role="timer" aria-label="Tempo restante do drop">
+          <small id="heroClockLabel">DROP ENCERRA EM</small>
+          <div class="hc-row">
+            <div class="hc"><b id="hcD">00</b><span>DIAS</span></div>
+            <div class="hc"><b id="hcH">00</b><span>HORAS</span></div>
+            <div class="hc"><b id="hcM">00</b><span>MIN</span></div>
+            <div class="hc"><b id="hcS">00</b><span>SEG</span></div>
+          </div>
+        </div>
         <div class="hero-buttons">
           <a href="#drops" class="btn btn-primary">VER O DROP <span>↗</span></a>
           <a href="#community" class="btn btn-outline">ENTRAR NA COMUNIDADE</a>
         </div>
       </div>
       <div class="hero-art">
-        <img src="img/driplabestilo.png" alt="DripLab Banner">
+        <span class="hero-004" id="hero004" aria-hidden="true">004</span>
+        <img class="hero-piece" src="img/produtos/moletom3.png" alt="Cobalt Hoodie">
+        <span class="hero-sticker">LIMITED</span>
+        <span class="hero-name">Cobalt Hoodie</span>
         <div class="vertical-text">STREETWEAR / CULTURE / GAMES</div>
       </div>
     </section>
@@ -74,6 +86,7 @@
         <div>
           <p class="eyebrow">01 / THE DROP</p>
           <h2>DROP <span id="dropNumberTitle">004</span></h2>
+          
         </div>
         <div class="countdown-wrap">
           <small id="countdownLabel">DROP ENCERRA EM</small>
@@ -81,17 +94,23 @@
         </div>
       </div>
 
-      <div class="drop-banner">
-        <div>
-          <span class="drop-number" id="dropNumber">004</span>
+      <div class="drop-banner drop-manifesto">
+        <div class="dm-main">
+          <p class="dm-kicker"><i></i>EDIÇÃO LIMITADA · UMA CHANCE</p>
+          <h3 class="dm-title">SEM<br><em>REPOSIÇÃO.</em></h3>
+          <p class="dm-tagline" id="dropTagline">Peças limitadas. Identidade ilimitada.</p>
+        </div>
+        <aside class="dm-side">
+          <span class="dm-stamp">LIMITED</span>
+          <p class="dm-label">COLEÇÃO</p>
           <h3 id="dropName">URBAN<br>GLITCH</h3>
-          <p id="dropTagline">Peças limitadas. Identidade ilimitada.</p>
-        </div>
-        <div class="drop-info">
-          <p>RESTAM</p>
-          <strong id="stock">--</strong>
-          <span>UNIDADES</span>
-        </div>
+          <div class="drop-info">
+            <p>RESTAM</p>
+            <strong id="stock">--</strong>
+            <span>UNIDADES</span>
+          </div>
+        </aside>
+        <div class="dm-tape" aria-hidden="true"><div>ÚLTIMAS PEÇAS /// GARANTA JÁ SEU DRIP /// ÚLTIMAS PEÇAS /// GARANTA JÁ SEU DRIP /// ÚLTIMAS PEÇAS /// GARANTA JÁ SEU DRIP /// ÚLTIMAS PEÇAS /// GARANTA JÁ SEU DRIP /// ÚLTIMAS PEÇAS /// GARANTA JÁ SEU DRIP ///</div></div>
       </div>
       <p class="access-note" id="dropAccess" role="status"></p>
       <a href="#shop" class="btn btn-primary tab-cta">VER AS PEÇAS DO DROP <span>↗</span></a>
@@ -118,9 +137,10 @@
 
       <div class="filters" id="filters">
         <button class="active" data-filter="all">Todos</button>
-        <button data-filter="hoodie">Hoodies</button>
         <button data-filter="tee">T-Shirts</button>
+        <button data-filter="hoodie">Hoodies</button>
         <button data-filter="short">Shorts</button>
+        <button data-filter="cap">Bonés</button>
         <button data-filter="accessory">Acessórios</button>
       </div>
 
@@ -165,7 +185,7 @@
     <section class="game section" id="game" data-tab="game" hidden>
       <div class="game-copy">
         <p class="eyebrow">05 / GAME</p>
-        <h2>JOGUE O <span>LAB</span>.</h2>
+        <h2>SE JOGA NO <span>DRIP</span>.</h2>
         <p>O universo DripLab também é jogável. Entre no jogo e viva a cultura digital da marca além da loja.</p>
         <div class="game-actions">
           <a class="btn btn-primary" id="gameLink" href="#game" target="_blank" rel="noopener noreferrer">JOGAR AGORA <span>↗</span></a>
@@ -208,7 +228,6 @@
     </div>
   </div>
 
-  <!-- Detalhe do produto -->
   <div class="modal" id="productModal" hidden>
     <div class="modal-box product-modal" role="dialog" aria-modal="true" aria-labelledby="pmName">
       <button class="modal-close" data-close aria-label="Fechar">✕</button>
@@ -217,6 +236,12 @@
         <p class="eyebrow" id="pmMeta"></p>
         <h3 id="pmName"></h3>
         <p class="pm-desc" id="pmDesc"></p>
+        <div class="pm-tabs" role="tablist" aria-label="Detalhes da peça">
+          <button type="button" role="tab" data-pmtab="medidas" aria-selected="true">MEDIDAS</button>
+          <button type="button" role="tab" data-pmtab="comp" aria-selected="false">COMPOSIÇÃO</button>
+          <button type="button" role="tab" data-pmtab="cuidados" aria-selected="false">CUIDADOS</button>
+        </div>
+        <div class="pm-panel" id="pmPanel" role="tabpanel"></div>
         <div class="pm-row"><strong id="pmPrice"></strong><span id="pmStock"></span></div>
         <button class="btn btn-primary full" id="pmAdd" type="button">ADICIONAR AO CARRINHO</button>
       </div>

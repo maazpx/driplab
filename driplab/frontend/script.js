@@ -184,13 +184,15 @@ function renderDrop() {
   const num = pad2(d.number).padStart(3, '0');
   $('heroEyebrow').textContent = `DROP ${num} / LIMITED EDITION`;
   $('dropNumberTitle').textContent = num;
-  $('dropNumber').textContent = num;
+  if ($('dropNumber')) $('dropNumber').textContent = num;
+  $('hero004').textContent = num;
   const nameEl = $('dropName'); clear(nameEl);
   const parts = d.name.split(' ');
   parts.forEach((p, i) => { nameEl.append(p); if (i < parts.length - 1) nameEl.append(document.createElement('br')); });
   $('dropTagline').textContent = d.tagline || '';
   $('stock').textContent = d.stock_left;
   $('countdownLabel').textContent = d.status === 'live' ? 'DROP ENCERRA EM' : d.status === 'upcoming' ? 'DROP COMEÇA EM' : 'DROP ENCERRADO';
+  $('heroClockLabel').textContent = $('countdownLabel').textContent;
 
   const a = d.access;
   const limit = `LIMITE DE ${d.max_per_user} PEÇA(S) POR PESSOA` + (state.user ? ` · VOCÊ JÁ COMPROU ${d.my_purchased}` : '');
@@ -216,7 +218,7 @@ function renderDrop() {
 const validSrc = u => (typeof u === 'string' && /^(https?:\/\/|\/?img\/)/.test(u.trim())) ? u.trim() : null;
 let swipedAt = 0; // evita abrir o produto quando o gesto foi um arrastar
 
-function applyPhoto(box, p, { nav = false } = {}) {
+function applyPhoto(box, p, { nav = false, hover = false} = {}) {
   box.querySelectorAll('.photo,.g-btn,.g-label').forEach(n => n.remove());
   box.classList.remove('has-photo', 'has-gallery');
   const pics = [['FRENTE', validSrc(p.image_url)], ['VERSO', validSrc(p.image_back_url)]]
@@ -257,6 +259,10 @@ function applyPhoto(box, p, { nav = false } = {}) {
       if (Math.abs(dx) > 40 && alive().length > 1) { swipedAt = Date.now(); go(dx < 0 ? 1 : -1); }
     });
     box.addEventListener('pointercancel', () => { x0 = null; });
+    if (hover && window.matchMedia && matchMedia('(hover: hover)').matches) {
+      box.addEventListener('mouseenter', () => { if (alive().length > 1) { cur = 1; render(); } });
+      box.addEventListener('mouseleave', () => { cur = 0; render(); });
+    }
   }
   render();
 }
@@ -273,15 +279,23 @@ async function loadProducts() {
   reconcileCart();
 }
 
+const ORDEM_LOJA = ['tee', 'hoodie', 'short', 'cap', 'accessory'];
+const porCategoria = (a, b) => {
+  const r = (x) => { const i = ORDEM_LOJA.indexOf(x.category); return i < 0 ? ORDEM_LOJA.length : i; };
+  return r(a) - r(b);
+};
+
 function renderProducts() {
   const box = $('products'); clear(box);
   if (!state.products.length) { box.append(h('p', { class: 'empty-note', text: state.q ? `Nenhuma peça encontrada para "${state.q}".` : 'Nenhuma peça nesta categoria.' })); return; }
-  state.products.forEach((p, i) => {
+  [...state.products].sort(porCategoria).forEach((p, i) => {
     const soldOut = p.sold_out;
     const pic = h('div', { class: `product-image product-${p.theme}`, onclick: () => { if (Date.now() - swipedAt > 400) openProduct(p.id); } },
       h('span', { text: p.badge_text }), h('b', { text: pad2(i + 1) }),
-      soldOut ? h('em', { class: 'sold-tag', text: 'ESGOTADO' }) : null);
-    applyPhoto(pic, p, { nav: true });
+      soldOut ? h('em', { class: 'stamp stamp-sold', text: 'SOLD OUT' })
+        : (p.stock > 0 && p.stock <= 5) ? h('em', { class: 'low-stock' }, h('i'), `SÓ RESTAM ${p.stock}`)
+        : h('em', { class: 'stamp', text: 'LIMITED' }));
+    applyPhoto(pic, p, { nav: true, hover: true });
     box.append(h('article', { class: 'product' + (soldOut ? ' sold-out' : ''), dataset: { category: p.category } },
       pic,
       h('div', { class: 'product-info' },
@@ -291,8 +305,36 @@ function renderProducts() {
   });
 }
 
+const SIZES = ['P', 'M', 'G', 'GG'];
+const MEDIDAS = {
+  hoodie: { cols: ['LARGURA', 'COMPR.', 'MANGA'], rows: { P: ['[52] cm', '[68] cm', '[64] cm'], M: ['[56] cm', '[70] cm', '[66] cm'], G: ['[58] cm', '[72] cm', '[68] cm'], GG: ['[62] cm', '[76] cm', '[72] cm'] } },
+  tee:    { cols: ['LARGURA', 'COMPR.', 'MANGA'], rows: { P: ['[48] cm', '[68] cm', '[22] cm'], M: ['[54] cm', '[70] cm', '[24] cm'], G: ['[56] cm', '[72] cm', '[26] cm'], GG: ['[60] cm', '[74] cm', '[28] cm'] } },
+  short:  { cols: ['CINTURA', 'COMPR.', 'GANCHO'], rows: { P: ['[35] cm', '[30] cm', '[26] cm'], M: ['[37] cm', '[32] cm', '[30] cm'], G: ['[39] cm', '[34] cm', '[34] cm'], GG: ['[42] cm', '[38] cm', '[38] cm'] } },
+};
+const COMPOSICAO = [['Tecido', '[algodão / poliamida]'], ['Estampa', '[universo-driplab]'], ['Modelagem', '[oversized] · [regular]']];
+const CUIDADOS = ['Lavar do avesso, água fria', 'Não usar alvejante', 'Secar à sombra', 'Passar do avesso, ferro morno'];
+let pmProduct = null, pmTab = 'medidas';
+
+function renderPmPanel() {
+  const box = $('pmPanel'); clear(box);
+  document.querySelectorAll('[data-pmtab]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.pmtab === pmTab)));
+  if (pmTab === 'medidas') {
+    const m = pmProduct && MEDIDAS[pmProduct.category];
+    if (!m) { box.append(h('p', { class: 'pm-note', text: 'Tamanho único.' })); return; }
+    box.append(h('table', {},
+      h('thead', {}, h('tr', {}, h('th', { text: 'TAM.' }), ...m.cols.map(c => h('th', { text: c })))),
+      h('tbody', {}, ...SIZES.map(sz => h('tr', {}, h('td', { text: sz }), ...m.rows[sz].map(v => h('td', { text: v })))))));
+  } else if (pmTab === 'comp') {
+    COMPOSICAO.forEach(([k, v]) => box.append(h('div', { class: 'pm-row2' }, h('span', { text: k }), h('span', { text: v }))));
+  } else {
+    box.append(h('div', { class: 'pm-care' }, ...CUIDADOS.map(t => h('div', { text: t }))));
+  }
+}
+document.querySelectorAll('[data-pmtab]').forEach(b => b.addEventListener('click', () => { pmTab = b.dataset.pmtab; renderPmPanel(); }));
+
 function openProduct(id) {
   const p = state.products.find(x => x.id === id); if (!p) return;
+  pmProduct = p; pmTab = 'medidas'; renderPmPanel();
   $('pmImage').className = `product-image product-${p.theme}`;
   $('pmBadge').textContent = p.badge_text;
   applyPhoto($('pmImage'), p, { nav: true });
@@ -307,13 +349,23 @@ function openProduct(id) {
 
 /* ---------- contagens regressivas ---------- */
 const fired = new Set();
+
+function setHeroClock(ms) {
+  const s = Math.floor(Math.max(0, ms) / 1000);
+  const v = { hcD: Math.floor(s / 86400), hcH: Math.floor((s % 86400) / 3600), hcM: Math.floor((s % 3600) / 60), hcS: s % 60 };
+  for (const id in v) { const el = $(id); if (el) el.textContent = pad2(v[id]); }
+}
 function tick() {
   const d = state.drop;
   if (d && d.countdown_to) {
     const left = Date.parse(d.countdown_to) - nowMs();
     $('countdown').textContent = fmtDuration(left);
+    setHeroClock(left);
     if (left <= 0 && !fired.has('drop' + d.countdown_to)) { fired.add('drop' + d.countdown_to); loadDrop().catch(() => {}); }
-  } else if (d) $('countdown').textContent = '00:00:00';
+  } else if (d) {
+    $('countdown').textContent = '00:00:00';
+    setHeroClock(0);
+  }
   const p = state.poll;
   if (p) {
     if (p.status === 'open') {
