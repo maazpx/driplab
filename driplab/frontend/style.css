@@ -9,7 +9,7 @@
     --orange:#FF8B00;
     --blue:#0027CC;
     --orange2:#F29B00;
-    --blue2:#2A3ED6;
+    --blue2:#26328a;
     --line:#292929}
 
 html{scroll-behavior:smooth}
@@ -503,7 +503,6 @@ main{min-height:calc(100vh - 76px - 140px)}
 .hero-art .vertical-text{z-index:3}
 @media(max-width:600px){.hero-art{height:520px}.hero-name{font-size:34px}}
 
-/* ===== 01 / THE DROP — "SEM REPOSIÇÃO." ===== */
 .drop-manifesto{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.8fr);gap:48px;align-items:center;
   min-height:480px;padding:56px 56px 84px;border-color:#2c2c2c;
   background:radial-gradient(120% 90% at 85% 0%,rgba(0,39,204,.38),transparent 60%),linear-gradient(110deg,#191919 0%,#101010 60%)}
@@ -527,3 +526,39 @@ main{min-height:calc(100vh - 76px - 140px)}
 @media(max-width:900px){.drop-manifesto{grid-template-columns:1fr;gap:34px;padding:34px 24px 74px}.dm-side{transform:none;display:block}}
 @media(max-width:600px){.drop-manifesto .dm-title{font-size:clamp(40px,13vw,64px)}.dm-title em{-webkit-text-stroke-width:2px}.dm-004{font-size:300px}.drop-manifesto{min-height:0}}
 @media(prefers-reduced-motion:reduce){.dm-kicker i,.dm-tape div{animation:none}}
+
+.about-lab{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:6vw;align-items:center;
+  padding-bottom:8vw;margin-bottom:8vw;border-bottom:1px solid var(--line);overflow:hidden}
+.about-copy h2{font-size:clamp(46px,6vw,88px);line-height:1.06;margin:0 0 30px;text-transform:uppercase}
+  .about-copy h2 span{color:var(--orange)}
+.about-lead{color:#b7b7b5;font-size:16px;line-height:1.75;max-width:620px;margin:0 0 32px}
+.about-pillars{list-style:none;margin:0 0 34px;padding:0;display:grid;gap:12px}
+.about-pillars li{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:start;border:1px solid #2c2c2c;background:#0d0d0d;padding:18px 20px;
+  transition:border-color .25s,transform .25s}
+.about-pillars li:hover{border-color:var(--orange);transform:translateX(6px)}
+.about-pillars b{font:400 38px/1 Anton,Impact,sans-serif;color:var(--orange)}
+.about-pillars strong{display:block;font-size:11px;font-weight:900;letter-spacing:2.5px;margin-bottom:6px}
+.about-pillars p{margin:0;color:#9a9a97;font-size:13px;line-height:1.6}
+.about-you{border-left:4px solid var(--orange);padding:6px 0 6px 20px;margin:0 0 30px;max-width:620px}
+.about-you strong{display:block;font:400 26px/1.05 Anton,Impact,sans-serif;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.about-you p{margin:0;color:#b7b7b5;font-size:14px;line-height:1.7}
+.about-link{display:inline-block}
+
+.about-logo{position:relative;aspect-ratio:1/1;max-width:560px;width:100%;justify-self:center;display:grid;place-items:center;isolation:isolate}
+.about-logo:before{content:"";position:absolute;inset:4%;border-radius:50%;z-index:-2;
+  background:radial-gradient(circle at 50% 45%,rgba(0,39,204,.55),rgba(0,39,204,.12) 55%,transparent 72%)}
+.about-ring{position:absolute;border-radius:50%;z-index:-1;pointer-events:none}
+.about-ring.r1{inset:2%;border:2px dashed rgba(255,138,0,.55);animation:aboutSpin 40s linear infinite}
+.about-ring.r2{inset:15%;border:1px solid rgba(245,245,240,.22);animation:aboutSpin 60s linear infinite reverse}
+.about-logo img{width:68%;height:auto;transform:rotate(-6deg);filter:drop-shadow(0 26px 40px rgba(0,0,0,.65));animation:aboutFloat 6s ease-in-out infinite}
+.about-chip{position:absolute;font:900 11px/1 Inter,Arial,sans-serif;letter-spacing:2px;padding:9px 13px;background:#0b0b0b;border:2px solid var(--text);pointer-events:none}
+.about-chip.c1{left:2%;top:16%;transform:rotate(-8deg);color:var(--orange);border-color:var(--orange)}
+.about-chip.c2{right:0;top:30%;transform:rotate(7deg)}
+.about-chip.c3{left:8%;bottom:14%;transform:rotate(5deg)}
+.about-tape{position:absolute;left:-6%;right:-6%;bottom:4%;transform:rotate(-4deg);background:var(--orange);color:#050505;overflow:hidden;white-space:nowrap;
+  padding:9px 0;font:400 17px/1 Anton,Impact,sans-serif;letter-spacing:2px;pointer-events:none}
+.about-tape div{display:inline-block;animation:marquee 24s linear infinite}
+@keyframes aboutSpin{to{transform:rotate(360deg)}}
+@keyframes aboutFloat{50%{transform:rotate(-3deg) translateY(-12px)}}
+@media(max-width:900px){.about-lab{grid-template-columns:1fr;gap:40px}.about-logo{max-width:420px}}
+@media(prefers-reduced-motion:reduce){.about-ring,.about-logo img,.about-tape div{animation:none}}
