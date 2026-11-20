@@ -19,10 +19,7 @@ Configurar Terminal:
   npm install
   cp .env.example .env
 
-Abra o arquivo *backend/.env* e ajuste:
-- DB_PASSWORD → a senha do seu MySQL
-- DB_PORT → 3306 (padrão) ou a porta que o seu MySQL usa
-- JWT_SECRET → uma frase longa e aleatória (32+ caracteres).
+
 
 Criar o banco e os dados de demonstração:
   npm run db:setup
@@ -35,8 +32,9 @@ Subir o servidor:
   npm start
 
 
-Abra *http://localhost:3000* no navegador. A documentação interativa da API está em
-*http://localhost:3000/api/docs*
+Abra *https://driplab-y54i.onrender.com/#home* no navegador.
+Link do GitHub: *https://github.com/maazpx/driplab*
+
 
 Contas de demonstração
 | Perfil | E-mail | Senha |
