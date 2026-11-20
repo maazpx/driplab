@@ -7,7 +7,7 @@ const { applyMigrations } = require('../src/db/migrator');
   const { database, host, port, user, password } = config.db;
   if (config.db.client === 'mysql') {
     const mysql = require('mysql2/promise');
-    const conn = await mysql.createConnection({ host, port, user, password });
+    const conn = await mysql.createConnection({ host, port, user, password, ...(config.db.ssl ? { ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: true } } : {}) });
     if (process.argv.includes('--reset')) {
       console.log(`! Recriando o banco "${database}"...`);
       await conn.query(`DROP DATABASE IF EXISTS \`${database}\``);

@@ -23,7 +23,8 @@ function createMysql(cfg) {
     waitForConnections: true, connectionLimit: 10,
     dateStrings: true,      
     decimalNumbers: true,  
-    charset: 'utf8mb4', 
+    charset: 'utf8mb4',
+    ...(cfg.ssl ? { ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: true } } : {}), 
   });
   pool.pool.on('connection', c => c.query("SET time_zone = '+00:00'"));
   const base = wrap(pool);

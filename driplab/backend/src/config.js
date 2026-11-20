@@ -47,5 +47,6 @@ module.exports = {
     password: env.DB_PASSWORD || '',
     database: env.DB_NAME || 'driplab',
     sqliteFile: env.SQLITE_FILE || ':memory:',
+    ssl: /^(1|true|yes)$/i.test(env.DB_SSL || ''),
   },
 };
