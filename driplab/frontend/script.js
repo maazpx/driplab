@@ -1,22 +1,17 @@
 'use strict';
-/* DripLab — front-end. Conversa com a API REST em /api (mesma origem que serve esta página). */
 
 const API = '/api';
 const $ = id => document.getElementById(id);
 const pad2 = n => String(n).padStart(2, '0');
 
-/* ---------- armazenamento (nunca quebra se o navegador bloquear) ---------- */
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch { /* ignora */ } },
   del(k) { try { localStorage.removeItem(k); } catch { /* ignora */ } },
 };
 
-/* ===== CONFIGURAÇÃO DO JOGO =====
-   Cole aqui o link do jogo do DripLab (começando com https://). Deixe '' enquanto não tiver. */
-const GAME_URL = '';
+const GAME_URL = 'https://gt-gamesdev.itch.io/drip-lab';
 
-/* ---------- estado ---------- */
 const state = {
   token: store.get('dl_token'),
   user: null, me: null,
@@ -26,7 +21,6 @@ const state = {
 };
 try { state.cart = JSON.parse(store.get('dl_cart') || '[]').filter(i => Number.isInteger(i.id) && Number.isInteger(i.qty) && i.qty > 0); } catch { state.cart = []; }
 
-/* ---------- utilidades ---------- */
 function h(tag, attrs = {}, ...kids) {
   const e = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -60,7 +54,6 @@ function ago(iso) {
 }
 const fmtDateTime = iso => new Date(iso).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 
-/* ---------- toasts (fila, para mostrar XP + level up + badge em sequência) ---------- */
 const toastEl = $('toast');
 const toastQueue = []; let toastBusy = false;
 function showToast(msg) { toastQueue.push(msg); if (!toastBusy) nextToast(); }
@@ -79,7 +72,6 @@ function announce(g) {
   (g.new_badges || []).forEach(b => showToast(`Badge desbloqueado: ${b.icon} ${b.name}`));
 }
 
-/* ---------- API ---------- */
 class ApiError extends Error {
   constructor(status, code, message, details) { super(message); this.status = status; this.code = code; this.details = details; }
 }
@@ -101,7 +93,6 @@ async function api(path, { method = 'GET', body } = {}) {
 const FIELD = { name: 'Nome', email: 'E-mail', password: 'Senha', referral_code: 'Indicação', body: 'Comentário', current_password: 'Senha atual' };
 const errText = e => e.details ? Object.entries(e.details).map(([k, v]) => `${FIELD[k] || k}: ${v}`).join(' · ') : e.message;
 
-/* ---------- modais e gaveta ---------- */
 let lastFocus = null;
 function openModal(el) {
   lastFocus = document.activeElement;
@@ -132,12 +123,9 @@ document.addEventListener('keydown', e => {
   closeDrawer();
 });
 
-/* ---------- navegação (menu mobile, filtros, busca) ---------- */
 $('menuBtn').addEventListener('click', () => $('mainNav').classList.toggle('mobile-open'));
 document.querySelectorAll('.nav a').forEach(a => a.addEventListener('click', () => $('mainNav').classList.remove('mobile-open')));
 
-/* ---------- abas (uma "página" por vez; o endereço #shop, #community… continua funcionando) ---------- */
-// Drops e Rewards ficam dentro da aba Início: o endereço #drops / #rewards abre o Início e rola até a seção.
 const TAB_OF = { home: 'home', drops: 'home', rewards: 'home', shop: 'shop', community: 'community', game: 'game' };
 function showTab(hash) {
   const name = TAB_OF[hash] || 'home';
